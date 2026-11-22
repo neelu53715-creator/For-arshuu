@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Arshuu 🤍</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-1: #fff5f7;
+      --bg-2: #ffe3ec;
+      --bg-3: #f3e8ff;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --primary: #e11d48;
+      --primary-soft: #ffe4e6;
+      --accent: #7c3aed;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --gold: #d97706;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      color: var(--text-main);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Floating Hearts Background */
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floater {
+      position: absolute;
+      bottom: -40px;
+      font-size: 20px;
+      opacity: 0.45;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.9);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.5;
+      }
+      85% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg) scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    /* STAGE 1: ENVELOPE */
+    #envelope-stage {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .badge-top {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.1);
+      margin-bottom: 24px;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 310px;
+      height: 210px;
+      cursor: pointer;
+      perspective: 1000px;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+
+    .envelope {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #ffffff, #fff1f2);
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(225, 29, 72, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 115px;
+      background: linear-gradient(180deg, #fecdd3 0%, #ffe4e6 100%);
+      clip-path: polygon(0 0, 50% 95%, 100% 0);
+      transform-origin: top;
+      transition: transform 0.6s ease;
+      z-index: 3;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .wax-seal {
+      position: relative;
+      z-index: 4;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fb7185, #be123c);
+      box-shadow: 0 6px 18px rgba(190, 18, 60, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: white;
+      animation: pulseSeal 2s infinite;
+      margin-top: 16px;
+    }
+
+    @keyframes pulseSeal {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .envelope-label {
+      margin-top: 14px;
+      font-family: 'Caveat', cursive;
+      font-size: 28px;
+      font-weight: 700;
+      color: #9f1239;
+      z-index: 2;
+    }
+
+    .tap-hint {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* STAGE 2: MAIN CARD */
+    #main-card-stage {
+      display: none;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 520px;
+      animation: cardReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardReveal {
+      from {
+        opacity: 0;
+        transform: translateY(35px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border-radius: 28px;
+      padding: 32px 26px;
+      box-shadow: 0 25px 60px rgba(159, 18, 57, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.9);
+      text-align: center;
+    }
+
+    .card-emoji-header {
+      font-size: 46px;
+      margin-bottom: 10px;
+      display: inline-block;
+      animation: bounceSlow 2.4s infinite;
+    }
+
+    @keyframes bounceSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .apology-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 6vw, 34px);
+      font-weight: 700;
+      line-height: 1.25;
+      color: #be123c;
+      background: linear-gradient(135deg, #be123c, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 18px;
+    }
+
+    .letter-box {
+      background: #fff9fa;
+      border: 1.5px dashed #fda4af;
+      border-radius: 20px;
+      padding: 20px 18px;
+      text-align: left;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .letter-box p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+
+    .letter-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .handwritten-sign {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      font-weight: 700;
+      color: #be123c;
+      text-align: right;
+      margin-top: 8px;
+    }
+
+    /* Peace Offering Vouchers */
+    .vouchers-section {
+      margin-bottom: 26px;
+      text-align: left;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .voucher-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .voucher {
+      background: white;
+      border: 1.5px solid #f3e8ff;
+      border-radius: 16px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .voucher:hover {
+      border-color: #d8b4fe;
+      transform: translateY(-2px);
+    }
+
+    .voucher.claimed {
+      background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+      border-color: #f43f5e;
+    }
+
+    .voucher-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .voucher-icon {
+      font-size: 24px;
+    }
+
+    .voucher-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .voucher-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .voucher-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #4b5563;
+      white-space: nowrap;
+    }
+
+    .voucher.claimed .voucher-status {
+      background: #e11d48;
+      color: white;
+    }
+
+    /* Interactive Question */
+    .question-box {
+      padding-top: 8px;
+      border-top: 1px solid #fce7f3;
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      min-height: 54px;
+      position: relative;
+      flex-wrap: wrap;
+    }
+
+    .btn-forgive {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(225, 29, 72, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-forgive:hover {
+      transform: scale(1.06);
+      box-shadow: 0 14px 30px rgba(225, 29, 72, 0.45);
+    }
+
+    .btn-angry {
+      background: #f3f4f6;
+      color: #4b5563;
+      border: 1.5px solid #e5e7eb;
+      padding: 13px 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    /* STAGE 3: TREATY UNLOCKED */
+    #treaty-stage {
+      display: none;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      animation: cardReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .certificate {
+      background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+      border: 3px double #f59e0b;
+      border-radius: 26px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(217, 119, 6, 0.18);
+      position: relative;
+    }
+
+    .cert-ribbon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .cert-tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .cert-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 14px;
+    }
+
+    .cert-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
+    .cert-perks {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 13px;
+      color: #92400e;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid #fde68a;
+    }
+
+    .screenshot-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Floating Hearts -->
+  <div class="floating-bg" id="floatingBg"></div>
+
+  <!-- STAGE 1: SEALED ENVELOPE -->
+  <div id="envelope-stage">
+    <div class="badge-top">✨ Special Delivery • Confidential</div>
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+      <div class="envelope">
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">🤍</div>
+        <div class="envelope-label">For Arshuu</div>
+      </div>
+    </div>
+    <p class="tap-hint">Tap the heart seal to open your card 💌</p>
+  </div>
+
+  <!-- STAGE 2: APOLOGY CARD -->
+  <div id="main-card-stage">
+    <div class="card">
+      <div class="card-emoji-header">🥺🤍</div>
+      <div class="card-subtitle">A Small Note For My Bestie</div>
+
+      <h1 class="apology-headline">
+        "I am sorryyyy arshuu please mujhe maaf krdoo"
+      </h1>
+
+      <div class="letter-box">
+        <p>
+          Hey Arshuu, I know main kabhi-kabhi thoda stupid act kar deta hoon aur bina soche bol jaata hoon, par mera intention kabhi bhi tujhe hurt karne ka nahi hota.
+        </p>
+        <p>
+          Tu meri sabse best friend hai aur tere bina sab kuch adhoora lagta hai. Gussa thook de yaar, ab please wapas normal ho jaa! 🌸
+        </p>
+        <div class="handwritten-sign">— Tera Idiot Bestie 🫶</div>
+      </div>
+
+      <!-- Interactive Peace Vouchers -->
+      <div class="vouchers-section">
+        <div class="section-title">Tap to Claim Your Apology Passes 🎟️</div>
+        <div class="voucher-grid">
+          <div class="voucher" onclick="claimVoucher(this)">
+            <div class="voucher-info">
+              <span class="voucher-icon">🍫</span>
+              <div>
+                <div class="voucher-title">Unlimited Treat Pass</div>
+                <div class="voucher-desc">Momos, ice cream ya chocolate—jo tu bole</div>
+              </div>
+            </div>
+            <span class="voucher-status">Tap to Claim</span>
+          </div>
+
+          <div class="voucher" onclick="claimVoucher(this)">
+            <div class="voucher-info">
+              <span class="voucher-icon">👑</span>
+              <div>
+                <div class="voucher-title">"Tum Hamesha Sahi Ho" Card</div>
+                <div class="voucher-desc">Valid for our next 3 arguments</div>
+              </div>
+            </div>
+            <span class="voucher-status">Tap to Claim</span>
+          </div>
+
+          <div class="voucher" onclick="claimVoucher(this)">
+            <div class="voucher-info">
+              <span class="voucher-icon">🎧</span>
+              <div>
+                <div class="voucher-title">Non-Stop Rant Pass</div>
+                <div class="voucher-desc">100% listening, zero interruptions</div>
+              </div>
+            </div>
+            <span class="voucher-status">Tap to Claim</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Verdict -->
+      <div class="question-box">
+        <div class="question-text" id="questionPrompt">Toh kya ab gussa khatam? 🥺</div>
+        <div class="btn-group">
+          <button class="btn-forgive" onclick="acceptApology()">Maaf Kiya 🤍</button>
+          <button class="btn-angry" id="angryBtn" onmouseover="dodgeButton()" onclick="dodgeButton()">Abhi Bhi Gussa Hu 😤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 3: OFFICIAL PEACE TREATY -->
+  <div id="treaty-stage">
+    <div class="certificate">
+      <div class="cert-ribbon">🏆🤍✨</div>
+      <div class="cert-tag">Official Bestie Peace Treaty</div>
+      <h2 class="cert-title">Arshuu Has Officially Forgiven You!</h2>
+      <p class="cert-body">
+        Is certificate ke saath saari narazgi aur gussa officially cancel kiya jaata hai. Bestie bond restored to 100%!
+      </p>
+      <div class="cert-perks" id="claimedSummary">
+        🎉 All apology treats & passes unlocked!
+      </div>
+      <p class="screenshot-hint">📸 Take a screenshot & send it back to claim your treat!</p>
+    </div>
+  </div>
+
+  <script>
+    // Generate floating hearts & sparkles
+    const bg = document.getElementById('floatingBg');
+    const symbols = ['🤍', '✨', '🌸', '💖', '🦋'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'floater';
+      el.textContent = symbols[i % symbols.length];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (7 + Math.random() * 8) + 's';
+      el.style.animationDelay = (Math.random() * 6) + 's';
+      el.style.fontSize = (14 + Math.random() * 14) + 'px';
+      bg.appendChild(el);
+    }
+
+    // Open Envelope
+    function openEnvelope() {
+      const wrapper = document.getElementById('envelopeWrapper');
+      wrapper.classList.add('open');
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 55,
+          spread: 65,
+          origin: { y: 0.6 },
+          colors: ['#fb7185', '#e11d48', '#c084fc', '#fda4af']
+        });
+      }
+
+      setTimeout(() => {
+        document.getElementById('envelope-stage').style.display = 'none';
+        document.getElementById('main-card-stage').style.display = 'block';
+      }, 550);
+    }
+
+    // Claim Vouchers
+    function claimVoucher(el) {
+      el.classList.toggle('claimed');
+      const status = el.querySelector('.voucher-status');
+      if (el.classList.contains('claimed')) {
+        status.textContent = 'Claimed ✓';
+      } else {
+        status.textContent = 'Tap to Claim';
+      }
+    }
+
+    // Playful dodging "No" button
+    const pleas = [
+      "Arrey yaar maan jao 🥺",
+      "Itna gussa accha nahi hota 😭",
+      "Chocolate dunga pakka! 🍫",
+      "Please Arshuu maan jao na 🤍",
+      "Yeh button kaam nahi karega 😜",
+      "Bas Maaf Kiya pe click kar de 🙏"
+    ];
+    let pleaIndex = 0;
+
+    function dodgeButton() {
+      const btn = document.getElementById('angryBtn');
+      const prompt = document.getElementById('questionPrompt');
+
+      const x = (Math.random() - 0.5) * 160;
+      const y = (Math.random() - 0.5) * 90;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+
+      prompt.textContent = pleas[pleaIndex % pleas.length];
+      pleaIndex++;
+    }
+
+    // Accept Apology
+    function acceptApology() {
+      const claimedCount = document.querySelectorAll('.voucher.claimed').length;
+      const summary = document.getElementById('claimedSummary');
+
+      if (claimedCount > 0) {
+        summary.textContent = `🎟️ ${claimedCount} Apology Pass${claimedCount > 1 ? 'es' : ''} Claimed & Ready to Redeem!`;
+      } else {
+        summary.textContent = `🎟️ Unlimited Treats & Bestie Vouchers Unlocked!`;
+      }
+
+      document.getElementById('main-card-stage').style.display = 'none';
+      document.getElementById('treaty-stage').style.display = 'block';
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 110,
+          spread: 85,
+          origin: { y: 0.55 }
+        });
+      }
+    }
+  </script>
+</body>
+  </html>
+  
